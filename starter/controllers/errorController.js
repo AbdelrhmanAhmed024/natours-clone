@@ -44,7 +44,7 @@ const sendErrorProd = (err, res) => {
     } else {
         res.status(500).json({
             status: 'error',
-            message: 'something is very fucked up'
+            message: 'something is very messed up in production version'
         })
 
     }

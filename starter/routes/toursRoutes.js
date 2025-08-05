@@ -14,21 +14,32 @@ Router.route('/tour-stats').get(tourController.getTourStats)
 Router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan)
 
 
-Router.route('/').get(tourController.getAllTours).post(authController.protect, tourController.createTour);
+Router.route('/')
+    .get(tourController.getAllTours)
+    .post(authController.protect, tourController.createTour);
 
 // Bookmark routes
 Router.route('/my-bookmarks')
-    .get(authController.protect, tourController.getMyBookmarks);
+    .get(authController.protect,
+        authController.restrictTo('user'),
+        tourController.getMyBookmarks);
 
 Router.route('/:id/bookmark')
-    .post(authController.protect, tourController.bookmarkTour)
-    .delete(authController.protect, tourController.unbookmarkTour);
+    .post(authController.protect,
+        authController.restrictTo('user'),
+        tourController.bookmarkTour)
+    .delete(authController.protect, authController.restrictTo('user'), tourController.unbookmarkTour);
 
-Router.route('/:id').get(tourController.getTour).patch(tourController.updateTour).delete(authController.protect, authController.restrictTo("admin", "lead-guide"), tourController.deleteTour);
+Router.route('/:id').get(tourController.getTour)
+    .patch(tourController.updateTour)
+    .delete(authController.protect,
+        authController.restrictTo("admin", "lead-guide"),
+        tourController.deleteTour);
 
 // Tour comparison route
 Router.route('/compare/:tourId1/:tourId2')
-    .get(tourController.compareTours);
+    .get(authController.protect,
+        tourController.compareTours);
 
 
 module.exports = Router;
